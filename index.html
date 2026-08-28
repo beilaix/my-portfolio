@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xxy作品集</title>
+
+  <!-- ===== 字体 & 图标 ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- ===== Tailwind CSS CDN ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ============================================================
+               全局重置 & 自定义变量
+               ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4A8FE4;
+      --primary-light: #6CB4EE;
+      --primary-dark: #2A6BB5;
+      --primary-bg: #F0F7FF;
+      --gray-100: #F5F8FC;
+      --gray-200: #E8EDF4;
+      --gray-500: #8A9BB0;
+      --gray-700: #3D4E63;
+      --gray-900: #1A2B4A;
+      --white: #FFFFFF;
+      --shadow-sm: 0 2px 12px rgba(74, 143, 228, 0.08);
+      --shadow-md: 0 8px 32px rgba(74, 143, 228, 0.12);
+      --radius: 20px;
+      --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--gray-900);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+               Loading 页
+               ============================================================ */
+    #loading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #E6F0FA 0%, #F5FAFF 100%);
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loading.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* —— 动态几何 Logo —— */
+    .loader-logo {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      margin-bottom: 48px;
+    }
+    .loader-logo .hex {
+      position: absolute;
+      inset: 0;
+      background: var(--primary);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      opacity: 0.15;
+      animation: pulse-hex 2.4s ease-in-out infinite;
+    }
+    .loader-logo .hex:nth-child(2) {
+      transform: scale(0.72) rotate(30deg);
+      opacity: 0.3;
+      animation-delay: 0.4s;
+    }
+    .loader-logo .hex:nth-child(3) {
+      transform: scale(0.44) rotate(60deg);
+      opacity: 0.5;
+      animation-delay: 0.8s;
+    }
+    .loader-logo .initials {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--primary-dark);
+      z-index: 2;
+    }
+
+    @keyframes pulse-hex {
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.15;
+      }
+      50% {
+        transform: scale(1.08) rotate(6deg);
+        opacity: 0.25;
+      }
+    }
+
+    /* —— 进度条 —— */
+    .loader-bar-wrap {
+      width: 200px;
+      height: 3px;
+      background: rgba(74, 143, 228, 0.15);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .loader-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-light), var(--primary));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    .loader-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--gray-500);
+      letter-spacing: 3px;
+      margin-top: 16px;
+    }
+    .loader-text span {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* ============================================================
+               自定义组件
+               ============================================================ */
+
+    /* —— 导航 —— */
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--gray-700);
+      transition: color var(--transition);
+      padding: 4px 0;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width var(--transition);
+      border-radius: 2px;
+    }
+    .nav-link:hover {
+      color: var(--primary-dark);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-link.active {
+      color: var(--primary-dark);
+    }
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* —— 移动端菜单 —— */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 280px;
+      height: 100vh;
+      background: var(--white);
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.06);
+      padding: 80px 40px 40px;
+      transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .mobile-menu.open {
+      right: 0;
+    }
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 43, 74, 0.2);
+      backdrop-filter: blur(4px);
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .mobile-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .mobile-menu .nav-link {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--gray-700);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .mobile-menu .nav-link:last-child {
+      border-bottom: none;
+    }
+
+    /* —— 按钮 —— */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 60px;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 16px rgba(74, 143, 228, 0.25);
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(74, 143, 228, 0.35);
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      background: transparent;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 60px;
+      border: 2px solid var(--primary);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .btn-outline:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(74, 143, 228, 0.25);
+    }
+
+    /* —— Section 标题 —— */
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+      color: var(--gray-900);
+    }
+    .section-title span {
+      color: var(--primary);
+    }
+
+    /* —— 项目卡片 —— */
+    .project-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+      border: 1px solid rgba(74, 143, 228, 0.06);
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(74, 143, 228, 0.15);
+    }
+    .project-card .thumb {
+      aspect-ratio: 16/10;
+      background: var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--gray-500);
+      overflow: hidden;
+      position: relative;
+    }
+    .project-card .thumb .badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .project-card .body {
+      padding: 28px 30px 32px;
+    }
+    .project-card .body h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--gray-900);
+    }
+    .project-card .body p {
+      font-size: 15px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .project-card .body .tag {
+      display: inline-block;
+      padding: 2px 14px;
+      border-radius: 30px;
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 500;
+      margin-right: 6px;
+    }
+
+    /* —— 优势卡片 —— */
+    .advantage-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(74, 143, 228, 0.06);
+      transition: all var(--transition);
+    }
+    .advantage-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(74, 143, 228, 0.12);
+    }
+    .advantage-card .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--primary);
+      margin-bottom: 18px;
+    }
+    .advantage-card h4 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--gray-900);
+    }
+    .advantage-card p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.7;
+    }
+
+    /* —— 统计数字 —— */
+    .stat-item .number {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .stat-item .label {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* —— 联系卡片 —— */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .contact-item:last-child {
+      border-bottom: none;
+    }
+    .contact-item .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .contact-item .info {
+      font-size: 15px;
+      color: var(--gray-700);
+    }
+    .contact-item .info strong {
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    /* —— 底部 —— */
+    .footer-qr {
+      width: 100px;
+      height: 100px;
+      background: var(--gray-200);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      font-size: 13px;
+      margin: 0 auto;
+    }
+
+    /* —— 滚动入场动画 —— */
+    .reveal {
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 {
+      transition-delay: 0.08s;
+    }
+    .reveal-delay-2 {
+      transition-delay: 0.16s;
+    }
+    .reveal-delay-3 {
+      transition-delay: 0.24s;
+    }
+    .reveal-delay-4 {
+      transition-delay: 0.32s;
+    }
+
+    /* —— 响应式微调 —— */
+    @media (max-width: 768px) {
+      .loader-logo {
+        width: 80px;
+        height: 80px;
+      }
+      .loader-logo .initials {
+        font-size: 24px;
+      }
+      .project-card .body {
+        padding: 20px 22px 26px;
+      }
+      .advantage-card {
+        padding: 24px 20px;
+      }
+      .stat-item .number {
+        font-size: 2rem;
+      }
+    }
+
+    /* —— 选中高亮 —— */
+    ::selection {
+      background: rgba(74, 143, 228, 0.2);
+      color: var(--primary-dark);
+    }
+
+    /* —— 滚动条 —— */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--gray-100);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-light);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* 首屏背景微光 */
+    .hero-glow {
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 70%;
+      height: 120%;
+      background: radial-gradient(ellipse at 70% 40%, rgba(74, 143, 228, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 网格背景（极淡） */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(74, 143, 228, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74, 143, 228, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ============================================================
+LOADING 页
+============================================================ -->
+<div id="loading" role="progressbar" aria-label="页面加载中">
+  <div class="loader-logo">
+    <div class="hex"></div>
+    <div class="hex"></div>
+    <div class="hex"></div>
+    <div class="initials">Xxy</div>
+  </div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar" id="loaderBar" style="width:0%;"></div>
+  </div>
+  <div class="loader-text">加载中 <span id="loaderPercent">0</span>%</div>
+</div>
+
+<!-- ============================================================
+移动端遮罩 & 菜单
+============================================================ -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<nav class="mobile-menu" id="mobileMenu" role="navigation" aria-label="移动端导航">
+  <a href="#hero" class="nav-link" data-nav>首页</a>
+  <a href="#about" class="nav-link" data-nav>关于</a>
+  <a href="#projects" class="nav-link" data-nav>项目</a>
+  <a href="#advantages" class="nav-link" data-nav>优势</a>
+  <a href="#footer" class="nav-link" data-nav>联系</a>
+</nav>
+
+<!-- ============================================================
+主内容
+============================================================ -->
+<main>
+
+  <!-- ===== 导航栏 ===== -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/40 transition-shadow" id="navbar">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="#hero" class="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
+        <span class="text-primary" style="color:var(--primary);">◆</span>
+        夏馨怡
+      </a>
+
+      <!-- 桌面导航 -->
+      <nav class="hidden md:flex items-center gap-10" aria-label="主导航">
+        <a href="#hero" class="nav-link active" data-nav>首页</a>
+        <a href="#about" class="nav-link" data-nav>关于</a>
+        <a href="#projects" class="nav-link" data-nav>项目</a>
+        <a href="#advantages" class="nav-link" data-nav>优势</a>
+        <a href="#footer" class="nav-link" data-nav>联系</a>
+      </nav>
+
+      <!-- 移动端汉堡 -->
+      <button class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 focus:outline-none" id="menuToggle" aria-label="切换导航菜单" aria-expanded="false">
+        <span class="block w-6 h-0.5 bg-gray-700 transition-all duration-300" style="transform-origin:center;"></span>
+        <span class="block w-6 h-0.5 bg-gray-700 transition-all duration-300"></span>
+        <span class="block w-6 h-0.5 bg-gray-700 transition-all duration-300" style="transform-origin:center;"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== 首屏 HERO ===== -->
+  <section id="hero" class="relative min-h-screen flex items-center pt-20 overflow-hidden grid-bg">
+    <div class="hero-glow"></div>
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 w-full py-20 md:py-28 relative z-10">
+      <div class="max-w-3xl">
+        <!-- 小标签 -->
+        <div class="inline-flex items-center gap-2 bg-primary-bg/80 text-primary-dark text-xs font-semibold uppercase tracking-[0.2em] px-4 py-2 rounded-full mb-6 border border-primary/10">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          开放合作 · 匠心编码
+        </div>
+
+        <!-- 大标题 -->
+        <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.04] tracking-tight text-gray-900">
+          你好，我是<br />
+          <span class="text-primary" style="color:var(--primary);">夏馨怡</span>
+        </h1>
+        <p class="text-xl sm:text-2xl md:text-3xl font-light text-gray-500 mt-4 tracking-wide">
+          <!--软件工程师 · 游戏制作人 · 后端架构-->
+          26届应届生 & 毕业于湖南理工大学-软件工程专业
+        </p>
+
+        <!-- 描述 -->
+        <p class="text-base sm:text-lg text-gray-500 max-w-xl mt-6 leading-relaxed">
+          专注 Java 生态与高性能后端系统，同时用代码构筑游戏世界。
+          从分布式架构到游戏玩法设计，让技术与创意同频共振。
+        </p>
+
+        <!-- CTA -->
+        <div class="flex flex-wrap gap-4 mt-10">
+          <a href="#projects" class="btn-primary">
+            <i class="fa-regular fa-compass"></i> 查看项目
+          </a>
+          <a href="#footer" class="btn-outline">
+            <i class="fa-regular fa-message"></i> 联系我
+          </a>
+        </div>
+
+        <!-- 微指标 -->
+        <div class="flex flex-wrap gap-8 mt-12 pt-6 border-t border-gray-200/60">
+          <div class="flex items-center gap-2 text-sm text-gray-500">
+            <span class="w-2 h-2 rounded-full bg-primary/60"></span>
+            5+ 年全栈经验
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-500">
+            <span class="w-2 h-2 rounded-full bg-primary/60"></span>
+            12+ 项目交付
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-500">
+            <span class="w-2 h-2 rounded-full bg-primary/60"></span>
+            3 款独立游戏
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 滚动提示 -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 text-xs uppercase tracking-[0.2em] animate-bounce">
+      <span>滚动</span>
+      <i class="fa-solid fa-chevron-down text-sm"></i>
+    </div>
+  </section>
+
+  <!-- ===== 个人经历 ABOUT ===== -->
+  <section id="about" class="py-24 md:py-32 bg-white">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="grid md:grid-cols-5 gap-12 md:gap-16 items-start">
+
+        <!-- 左：头像 -->
+        <div class="md:col-span-2 reveal">
+          <div class="relative">
+            <div class="aspect-square rounded-3xl overflow-hidden bg-primary-bg border-2 border-white shadow-lg flex items-center justify-center text-gray-400">
+              <!-- 头像占位 —— 纯色 + 字母 -->
+              <div class="aspect-square rounded-3xl overflow-hidden border-2 border-white shadow-lg">
+                <img src="photo/avatar.jpg" alt="证件照" class="w-full h-full object-cover" />
+              </div>
+            </div>
+            <!-- 装饰小点 -->
+            <div class="absolute -bottom-3 -right-3 w-20 h-20 rounded-full bg-primary/5 -z-10"></div>
+            <div class="absolute -top-3 -left-3 w-12 h-12 rounded-full bg-primary/5 -z-10"></div>
+          </div>
+        </div>
+
+        <!-- 右：内容 -->
+        <div class="md:col-span-3 reveal reveal-delay-1">
+          <div class="section-label">关于我</div>
+          <h2 class="section-title">
+            用代码 <span>创造</span> 价值<br />
+            用游戏 <span>传递</span> 快乐
+          </h2>
+
+          <div class="mt-6 space-y-4 text-gray-600 leading-relaxed text-base">
+            <p>
+              我是夏馨怡，一名热爱技术与创造的软件工程师。主攻 <strong class="text-gray-900">Java 后端开发</strong>，
+              擅长构建高并发、高可用的分布式系统。同时在游戏制作领域持续探索，将编程思维融入玩法设计。
+            </p>
+            <p>
+              我相信 <strong class="text-gray-900">「优雅的代码」</strong> 和 <strong class="text-gray-900">「动人的体验」</strong>
+              是同一枚硬币的两面。无论是企业级应用还是独立游戏，我都追求极致的工程品质与人文温度。
+            </p>
+          </div>
+
+          <!-- 联系方式 -->
+          <div class="mt-8 grid sm:grid-cols-2 gap-4">
+            <div class="contact-item !border-b-0 !p-0">
+              <div class="icon"><i class="fa-regular fa-envelope"></i></div>
+              <div class="info"><strong>邮箱</strong><br />beilieaix@outlook.com</div>
+            </div>
+            <div class="contact-item !border-b-0 !p-0">
+              <div class="icon"><i class="fa-regular fa-phone"></i></div>
+              <div class="info"><strong>电话</strong><br />+86 157 0088 5139</div>
+            </div>
+            <div class="contact-item !border-b-0 !p-0">
+              <div class="icon"><i class="fa-brands fa-github"></i></div>
+              <div class="info"><strong>GitHub</strong><br />beilaix</div>
+            </div>
+            <div class="contact-item !border-b-0 !p-0">
+              <div class="icon"><i class="fa-brands fa-weixin"></i></div>
+              <div class="info"><strong>微信</strong><br />yeolclover1127</div>
+            </div>
+          </div>
+
+          <!-- 数据统计 -->
+          <div class="grid grid-cols-3 gap-6 mt-10 pt-8 border-t border-gray-200/60">
+            <div class="stat-item text-center">
+              <div class="number" data-count="12">0</div>
+              <div class="label">项目交付</div>
+            </div>
+            <div class="stat-item text-center">
+              <div class="number" data-count="5">0</div>
+              <div class="label">年经验</div>
+            </div>
+            <div class="stat-item text-center">
+              <div class="number" data-count="3">0</div>
+              <div class="label">独立游戏</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 精选项目 PROJECTS ===== -->
+  <section id="projects" class="py-24 md:py-32 bg-primary-bg/40">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+        <div class="section-label justify-center flex">精选项目</div>
+        <h2 class="section-title">把 <span>想法</span> 变成 <span>现实</span></h2>
+        <p class="text-gray-500 mt-4 text-base">每个项目都是一次探索，从后端系统到游戏世界，用技术落地创意。</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- 项目 1 -->
+        <div class="project-card reveal reveal-delay-1">
+          <!-- 项目封面图 -->
+          <div class="thumb relative overflow-hidden">
+            <img src="photo/PlantvsZombie.png" alt="植物大战僵尸 2D 小游戏" class="w-full h-full object-cover" />
+            <span class="badge absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-primary-dark shadow-sm">独立游戏</span>
+          </div>
+          <div class="body">
+            <h3>植物大战僵尸 2D 小游戏</h3>
+            <p>基于 Unity 引擎开发 2D 塔防游戏，实现卡牌选卡、植物种植、阳光收集、多波僵尸进攻、战斗对抗、游戏胜负完整业务闭环。</p>
+            <div>
+              <span class="tag">Unity2D</span>
+              <span class="tag">C#</span>
+              <span class="tag">DOTween</span>
+              <span class="tag">状态机</span>
+            </div>
+            <!-- 可选项：添加更多信息 -->
+            <div class="mt-3 text-xs text-gray-400">
+              <span>2026.05 - 2026.07</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 项目 2 -->
+        <div class="project-card reveal reveal-delay-2">
+          <!-- 项目封面图 -->
+          <div class="thumb relative overflow-hidden">
+            <img src="photo/health.png" alt="社区居民健康档案管理系统" class="w-full h-full object-cover" />
+            <span class="badge absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-primary-dark shadow-sm">后端架构</span>
+          </div>
+          <div class="body">
+            <h3>社区居民健康档案管理系统</h3>
+            <p>为社区提供集档案管理、在线预约、健康数据可视化于一体的一站式管理平台。</p>
+            <div>
+              <span class="tag">SpringBoot</span>
+              <span class="tag">MyBatis-Plus</span>
+              <span class="tag">MySQL</span>
+              <span class="tag">Thymeleaf</span>
+              <span class="tag">Bootstrap5</span>
+            </div>
+            <div class="mt-3 text-xs text-gray-400">
+              <span>2025.11 - 2026.04</span>
+              <span class="ml-3">🏷️ 独立开发</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 项目 3 -->
+        <div class="project-card reveal reveal-delay-3">
+          <div class="thumb" style="background:linear-gradient(135deg,#DCE8F5,#EFF4FA);">
+            <span class="text-primary/40 text-5xl">🧩</span>
+            <span class="badge">开源工具</span>
+          </div>
+          <div class="body">
+            <h3>CodeFlow 代码生成器</h3>
+            <p>基于 AST 的 Java 代码生成工具，支持 CRUD 一键生成、API 文档自动同步，GitHub 2.1k ⭐。</p>
+            <div>
+              <span class="tag">Java</span>
+              <span class="tag">AST</span>
+              <span class="tag">OpenAPI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 更多项目链接 -->
+      <div class="text-center mt-14 reveal">
+        <a href="projects.html" class="text-primary-dark font-medium hover:text-primary transition inline-flex items-center gap-2">
+          查看全部项目 <i class="fa-solid fa-arrow-right text-sm"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 竞赛荣誉 COMPETITIONS ===== -->
+  <section id="competitions" class="py-24 md:py-32 bg-white border-t border-primary/5">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <!-- 标题区域（居中） -->
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <div class="section-label justify-center flex">竞赛荣誉</div>
+        <h2 class="section-title">以赛 <span>促学</span> · 实战 <span>检验</span></h2>
+        <p class="text-gray-500 mt-4 text-base">在竞赛中磨砺技术，在挑战中突破自我，用奖项证明工程实力。</p>
+      </div>
+
+      <!-- 单个竞赛卡片：左文右图 -->
+      <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-primary/5 overflow-hidden reveal reveal-delay-1 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row">
+          <!-- 左侧：文字内容 -->
+          <div class="flex-1 p-8 md:p-10">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-3xl">📊</span>
+              <span class="text-xs font-semibold text-primary bg-primary-bg px-3 py-1 rounded-full">2024</span>
+            </div>
+            <h4 class="text-xl font-bold text-gray-900">全国大学生数学建模竞赛</h4>
+            <div class="inline-block bg-primary/10 text-primary-dark text-xs font-bold px-3 py-1 rounded-full mt-2 mb-4">
+              ｜湖南省二等奖（队长）
+            </div>
+            <p class="text-sm text-gray-500 leading-relaxed">
+              统筹建模思路与分工，针对黄河水沙通量问题构建时间序列预测模型（ARIMA/SARIMAX），独立编写 Python 核心算法，完成数据清洗、特征工程与模型调优，对比 LSTM 提升预测精度；锤炼了逻辑建模、算法调优及严谨的科研文档撰写能力。
+            </p>
+            <div class="mt-5">
+              <a href="word/E.docx" target="_blank" class="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark transition">
+                <i class="fa-regular fa-file-word"></i> 查看论文文档
+              </a>
+            </div>
+          </div>
+
+          <!-- 右侧：图片 -->
+          <div class="md:w-2/5 bg-primary-bg/30 flex items-center justify-center p-6 md:p-8">
+            <div class="w-full rounded-xl overflow-hidden shadow-sm border border-white/50">
+              <img src="photo/mathos.png" alt="数学建模论文截图" class="w-full h-auto object-cover" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 个人优势 ADVANTAGES ===== -->
+  <section id="advantages" class="py-24 md:py-32 bg-white">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+        <div class="section-label justify-center flex">核心优势</div>
+        <h2 class="section-title">为什么 <span>选择</span> 我</h2>
+        <p class="text-gray-500 mt-4 text-base">不只是写代码，更是用技术思维解决真实问题，为产品注入生命力。</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- 优势 1 -->
+        <div class="advantage-card reveal reveal-delay-1">
+          <div class="icon"><i class="fa-solid fa-cubes"></i></div>
+          <h4>架构设计能力</h4>
+          <p>从单体到微服务，精通 Spring Cloud、Dubbo 等框架，设计高可用、可扩展的系统架构。</p>
+        </div>
+
+        <!-- 优势 2 -->
+        <div class="advantage-card reveal reveal-delay-2">
+          <div class="icon"><i class="fa-solid fa-gamepad"></i></div>
+          <h4>游戏开发经验</h4>
+          <p>独立完成多款游戏从原型到上线，熟悉 Unity 引擎、玩法设计、性能优化与发行流程。</p>
+        </div>
+
+        <!-- 优势 3 -->
+        <div class="advantage-card reveal reveal-delay-3">
+          <div class="icon"><i class="fa-solid fa-code"></i></div>
+          <h4>全栈技术视野</h4>
+          <p>后端 Java 为主，同时掌握前端、数据库、DevOps，能独立完成完整产品闭环。</p>
+        </div>
+
+        <!-- 优势 4 -->
+        <div class="advantage-card reveal reveal-delay-4">
+          <div class="icon"><i class="fa-regular fa-lightbulb"></i></div>
+          <h4>产品思维驱动</h4>
+          <p>不止关注技术实现，更深入理解业务场景，用技术为产品创造可量化的价值。</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 底部 FOOTER ===== -->
+  <footer id="footer" class="py-16 bg-gray-900 text-white/80">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+        <!-- 品牌 -->
+        <div class="lg:col-span-1">
+          <div class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <span class="text-primary-light">◆</span>
+            夏馨怡
+          </div>
+          <p class="text-sm text-white/50 mt-3 leading-relaxed">
+            软件工程师 · 游戏制作人<br />
+            用代码构建价值，用游戏传递快乐。
+          </p>
+          <div class="flex gap-4 mt-6">
+            <a href="#" class="text-white/40 hover:text-white transition text-lg"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="text-white/40 hover:text-white transition text-lg"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="text-white/40 hover:text-white transition text-lg"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="text-white/40 hover:text-white transition text-lg"><i class="fa-brands fa-bilibili"></i></a>
+          </div>
+        </div>
+
+        <!-- 联系信息 -->
+        <div>
+          <h5 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">联系方式</h5>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-center gap-3">
+              <i class="fa-regular fa-envelope w-4 text-primary-light"></i>
+              <span>beilieaix@outlook.com</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <i class="fa-regular fa-phone w-4 text-primary-light"></i>
+              <span>+86 157 0088 5139</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <i class="fa-brands fa-weixin w-4 text-primary-light"></i>
+              <span>yeolclover1127</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <i class="fa-regular fa-clock w-4 text-primary-light"></i>
+              <span>响应时间 · 24h 内</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 导航 -->
+        <div>
+          <h5 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">快速导航</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#hero" class="hover:text-white transition">首页</a></li>
+            <li><a href="#about" class="hover:text-white transition">关于</a></li>
+            <li><a href="#projects" class="hover:text-white transition">项目</a></li>
+            <li><a href="#advantages" class="hover:text-white transition">优势</a></li>
+          </ul>
+        </div>
+
+        <!-- 微信二维码 -->
+        <div>
+          <h5 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">微信</h5>
+          <div class="footer-qr bg-white/10 border border-white/10 flex flex-col items-center justify-center text-white/30">
+            <!--<i class="fa-brands fa-weixin text-3xl mb-1"></i>-->
+            <img src="photo/vx.jpg" class="w-full h-full object-cover" />
+           <!-- <span class="text-[10px]">扫码联系</span>-->
+          </div>
+          <p class="text-[11px] text-white/30 mt-3 text-center">扫一扫，即刻沟通</p>
+        </div>
+
+      </div>
+
+      <!-- 版权 -->
+      <div class="border-t border-white/10 mt-12 pt-8 text-center text-sm text-white/30">
+        &copy; 2026 夏馨怡 · 用代码构建价值
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ============================================================
+JavaScript
+============================================================ -->
+<script>
+  (function() {
+    'use strict';
+
+    // =============================================
+    // 1. LOADING 页
+    // =============================================
+    const loading = document.getElementById('loading');
+    const loaderBar = document.getElementById('loaderBar');
+    const loaderPercent = document.getElementById('loaderPercent');
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 12 + 4;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        // 完成后隐藏 loading
+        setTimeout(() => {
+          loading.classList.add('hide');
+          // 触发统计数字动画
+          animateCounters();
+          // 触发 Reveal 动画
+          observeReveal();
+        }, 400);
+      }
+      loaderBar.style.width = progress + '%';
+      loaderPercent.textContent = Math.min(Math.floor(progress), 100);
+    }, 180);
+
+    // =============================================
+    // 2. 移动端菜单
+    // =============================================
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    const navLinks = document.querySelectorAll('[data-nav]');
+
+    function toggleMenu(open) {
+      const isOpen = open !== undefined ? open : !mobileMenu.classList.contains('open');
+      mobileMenu.classList.toggle('open', isOpen);
+      mobileOverlay.classList.toggle('show', isOpen);
+      menuToggle.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    menuToggle.addEventListener('click', () => toggleMenu());
+    mobileOverlay.addEventListener('click', () => toggleMenu(false));
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        toggleMenu(false);
+        // 高亮当前导航
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // =============================================
+    // 3. 导航高亮 (滚动监听)
+    // =============================================
+    const sections = document.querySelectorAll('section[id]');
+    const navAll = document.querySelectorAll('.nav-link');
+
+    function updateNav() {
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 120;
+        if (window.scrollY >= top) {
+          current = section.getAttribute('id');
+        }
+      });
+      navAll.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+      });
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+
+    // =============================================
+    // 4. 导航栏阴影
+    // =============================================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(0,0,0,0.04)' : 'none';
+    }, { passive: true });
+
+    // =============================================
+    // 5. Reveal 滚动入场
+    // =============================================
+    function observeReveal() {
+      const els = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+      });
+      els.forEach(el => observer.observe(el));
+    }
+
+    // 如果 loading 已完成，直接执行；否则由 loading 完成时触发
+    if (loading.classList.contains('hide')) {
+      observeReveal();
+    }
+
+    // =============================================
+    // 6. 统计数字动画
+    // =============================================
+    function animateCounters() {
+      const counters = document.querySelectorAll('.stat-item .number');
+      counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-count'), 10);
+        if (isNaN(target)) return;
+        let current = 0;
+        const step = Math.max(1, Math.ceil(target / 30));
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          counter.textContent = current;
+        }, 50);
+      });
+    }
+
+    // 如果 loading 已完成，立即执行；否则由 loading 完成时触发
+    if (loading.classList.contains('hide')) {
+      animateCounters();
+    }
+
+    // =============================================
+    // 7. 移动端菜单汉堡动画
+    // =============================================
+    menuToggle.addEventListener('click', function() {
+      const spans = this.querySelectorAll('span');
+      const isOpen = mobileMenu.classList.contains('open');
+      if (isOpen) {
+        spans[0].style.transform = 'rotate(0deg) translate(0, 0)';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'rotate(0deg) translate(0, 0)';
+      } else {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+      }
+    });
+
+    // =============================================
+    // 8. 键盘辅助：ESC 关闭菜单
+    // =============================================
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        toggleMenu(false);
+      }
+    });
+
+  })();
+</script>
+
+</body>
+</html>
