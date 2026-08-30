@@ -258,8 +258,11 @@
         .carousel-slide img {
             width: 100%;
             height: 100%;
-            object-fit: contain;  /* 保持图片比例完整，不足部分显示背景色 */
+            object-fit: cover;
             object-position: center;
+        }
+        .carousel-container {
+            background: #F0F7FF;   /* 浅蓝灰，与整体风格一致 */
         }
         .carousel-btn {
             position: absolute;
